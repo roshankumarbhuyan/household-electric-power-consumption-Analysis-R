@@ -147,3 +147,38 @@ autoplot(my_fc)
 myds_month <- decompose(myts)
 plot(myds_month)
 summary(myds_month)
+#---------holt winters------
+
+HWplot <- function(DF,  n.ahead = 120,  CI = .95,  error.ribbon = 'green', line.size = 1){
+  
+  hw <- HoltWinters(DF)
+  
+  forecast <- predict(hw, n.ahead = n.ahead,  prediction.interval = T,  level = CI)
+  
+  
+  for_values <- data.frame(time = round(time(forecast),  3),  value_forecast = as.data.frame(forecast)$fit,  dev = as.data.frame(forecast)$upr-as.data.frame(forecast)$fit)
+  
+  fitted_values <- data.frame(time = round(time(hw$fitted),  3),  value_fitted = as.data.frame(hw$fitted)$xhat)
+  
+  actual_values <- data.frame(time = round(time(hw$x),  3),  Actual = c(hw$x))
+  
+  
+  graphset <- merge(actual_values,  fitted_values,  by = 'time',  all = TRUE)
+  graphset <- merge(graphset,  for_values,  all = TRUE,  by = 'time')
+  graphset[is.na(graphset$dev),  ]$dev<-0
+  
+  graphset$Fitted <- c(rep(NA,  NROW(graphset)-(NROW(for_values) + NROW(fitted_values))),  fitted_values$value_fitted,  for_values$value_forecast)
+  
+  
+  graphset.melt <- melt(graphset[, c('time', 'Actual', 'Fitted')], id = 'time')
+  
+  p <- ggplot(graphset.melt,  aes(x = time,  y = value)) + 
+    geom_ribbon(data = graphset, aes(x = time, y = Fitted, ymin = Fitted-dev,  ymax = Fitted + dev),  alpha = .2,  fill = error.ribbon) + 
+    geom_line(aes(colour = variable), size = line.size) + geom_vline(x = max(actual_values$time),  xintercept = 2) + 
+    xlab('Time') + ylab('Value')
+  return(p)
+  
+}
+
+HWplot(myts) + xlim(2007,2010)
+

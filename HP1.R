@@ -109,3 +109,23 @@ Aug2009 <- mydata1date %>% filter(year(mydata1date$DateTime)==2009,month(mydata1
 Aug2010 <- mydata1date %>% filter(year(mydata1date$DateTime)==2010,month(mydata1date$DateTime)==08)
 julyaug2010 <- Islice(mydata1hour,as.POSIXct("2010-07-20"),as.POSIXct("2010-08-20"))
 Gap30 <- mydata1date %>% filter(Global_active_power>40)
+#====================vizualization complete linegraph==========================================
+Allplot<- function(DF) {
+  ggplot(data=DF , aes(x = DateTime , y= Global_active_power)) + 
+    geom_line(aes(color="global"))+
+    geom_line(aes(y=heating, color = "heating"))+
+    geom_line(aes(y=laundry,color="laundry"))+
+    geom_line(aes(y=kitchen,color="kitchen"))+
+    geom_line(aes(y=Res,color="Residual"))+
+    scale_color_manual(values = c("red", "black","green", "blue", "darkseagreen3"))+ labs(y = "Power Watt Hour")
+}
+plot_grid(Allplot(mydata1date), Allplot(mydata1week), Allplot(mydata1month),Allplot(mydata1year), labels = c('DayAVG',"weekavg", 'MonthAVG', 'yearAVG')) 
+plot_grid(Allplot(Aug20), Allplot(Aug2008),Allplot(Aug2009),Allplot(Aug2010), labels = c('2007', '2008', '2009','2010')) 
+Allplot(julyaug2010)
+plot_grid(Allplot(mydata1wend), Allplot(mydata1wday), labels = c('weekdays', 'weekends')) 
+#====================vizualization Histogram==========================================
+AllPlotHist <-function(DF){
+  ggplot(DF, aes(x=Global_active_power),) + geom_histogram( bandwidth=4 ,colour= "cornflowerblue",fill="red")
+}
+
+plot_grid(AllPlotHist(mydata1date), AllPlotHist(mydata1month),AllPlotHist(mydata1year), labels = c('date', 'month', 'year')) 

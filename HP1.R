@@ -143,3 +143,7 @@ names(my_df_ts) <- c("Global_active_power", "time")
 mymodel <- tslm(Global_active_power~season+trend,my_df_ts)
 my_fc <- forecast(mymodel,h=120)
 autoplot(my_fc)
+#---------TS forecasting decomp------
+myds_month <- decompose(myts)
+plot(myds_month)
+summary(myds_month)

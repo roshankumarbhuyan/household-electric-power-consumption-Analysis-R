@@ -129,3 +129,17 @@ AllPlotHist <-function(DF){
 }
 
 plot_grid(AllPlotHist(mydata1date), AllPlotHist(mydata1month),AllPlotHist(mydata1year), labels = c('date', 'month', 'year')) 
+
+#====================Time series==========================================
+myts <- ts(mydata1week$Global_active_power, start=c(2007, 1), end=c(2010,11), frequency=52) 
+myts <- ts(mydata1Season$Global_active_power, frequency=04) 
+tail(mydata1month)
+plot(myts)
+plot(log(myts))  # make it stationary.. makes the varience equall
+plot(diff(log(myts)))# makes the mean constant with time
+#---------tslm function----------
+my_df_ts <- data.frame(Globalactive = myts, as.numeric(time(myts)))
+names(my_df_ts) <- c("Global_active_power", "time")
+mymodel <- tslm(Global_active_power~season+trend,my_df_ts)
+my_fc <- forecast(mymodel,h=120)
+autoplot(my_fc)

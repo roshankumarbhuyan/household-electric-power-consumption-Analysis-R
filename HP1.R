@@ -99,3 +99,13 @@ mydata1year <- mydata1 %>% aggregate(by =list(year(mydata1$DateTime)), FUN = mea
 mydata1month<- mydata1 %>% aggregate(by = list(month(mydata1$DateTime), year(mydata1$DateTime)), FUN = mean)
 mydata15<- mydata1 %>%   rename(date = DateTime )
 mydata15 <- timeAverage(mydata15 , avg.time = "15 min", fill = TRUE,statistic = "mean")
+
+#====================Data filter==========================================
+mydata1wend <- mydata1date  %>% filter(mydata1date$day=="Saturday" | mydata1date$day=="Sunday" & year(mydata1date$DateTime)==2006)
+mydata1wday <- mydata1date  %>% filter(mydata1date$day!="Saturday" & mydata1date$day!="Sunday")
+Aug2007 <- mydata1date %>% filter(year(mydata1date$DateTime)==2007,month(mydata1date$DateTime)==08)
+Aug2008 <- mydata1date %>% filter(year(mydata1date$DateTime)==2008,month(mydata1date$DateTime)==08)
+Aug2009 <- mydata1date %>% filter(year(mydata1date$DateTime)==2009,month(mydata1date$DateTime)==08)
+Aug2010 <- mydata1date %>% filter(year(mydata1date$DateTime)==2010,month(mydata1date$DateTime)==08)
+julyaug2010 <- Islice(mydata1hour,as.POSIXct("2010-07-20"),as.POSIXct("2010-08-20"))
+Gap30 <- mydata1date %>% filter(Global_active_power>40)

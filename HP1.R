@@ -129,6 +129,41 @@ AllPlotHist <-function(DF){
 }
 
 plot_grid(AllPlotHist(mydata1date), AllPlotHist(mydata1month),AllPlotHist(mydata1year), labels = c('date', 'month', 'year')) 
+#====================vizualization pie==========================================
+
+# Pie Chart with Percentages
+piepieday <- function(d,m,y){
+  mydf=mydata1date %>%  filter(year(mydata1date$DateTime)==y,month(mydata1date$DateTime)==m,day(mydata1date$DateTime)==m)
+  
+  slices <- c(mydf$kitchen, mydf$laundry, mydf$heating, mydf$Res) 
+  lbls <- c("Kitchen", "Laundry", "Heating", "Residual")
+  pct <- round(slices/sum(slices)*100)
+  lbls <- paste(lbls, pct) # add percents to labels 
+  lbls <- paste(lbls,"%",sep="") # ad % to labels 
+  pie3D(slices,labels=lbls,explode=0.1,
+        main=" 3d Pie Chart of energy usage ")
+  # pie(slices,labels = lbls, col=rainbow(length(lbls)),
+  #  main="Pie Chart of energy usage") 
+}
+
+piepieday(10,11,2007)
+
+
+seasonpie <- function(SS,y){
+  
+  mydf  <- mydata2Season  %>%  filter(year==y, Season == SS)
+  slices <- c(mydf$kitchen, mydf$laundry, mydf$heating, mydf$Res) 
+  lbls <- c("Kitchen", "Laundry", "Heating", "Residual")
+  pct <- round(slices/sum(slices)*100)
+  lbls <- paste(lbls, pct) # add percents to labels 
+  lbls <- paste(lbls,"%",sep="") # ad % to labels 
+  pie(slices,labels = lbls, col=rainbow(length(lbls)),
+      main="Pie Chart of energy of 2007") 
+}
+
+grid.arrange(seasonpie("winter",2007), seasonpie("autumm",2007),seasonpie("spring",2007),seasonpie("summer",2007), nrow=2) 
+
+seasonpie("summer",2007)
 
 #====================Time series==========================================
 myts <- ts(mydata1week$Global_active_power, start=c(2007, 1), end=c(2010,11), frequency=52) 
